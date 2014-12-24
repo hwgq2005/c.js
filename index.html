@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>Examples</title>
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<link href="" rel="stylesheet">
+	</head>
+	<body>
+	   
+	   <div id="one" class="aaa"> 
+			<div class="tip">2222</div>
+			<div class="tip">3333</div>
+			<div class="tip">4444</div>
+			<div class="tip">2222</div>
+			<div class="tip">2222</div>
+
+			<div class="two">来找我！！！</div>
+
+			<div class="tip">2222</div>
+			<div class="tip">2222</div>
+		</div>
+	    <script src="c.js"></script>
+		<script>
+			var one=document.getElementById('one');
+			var c=getChild(one);
+			// var _html="<p>这是第一个P标签</p>"
+			// c.innertex=_html;
+			function getChild(elem){
+				c=elem.firstChild;
+				while(c.nodeType == '3') {
+					c=c.nextSibling;
+				};
+				return c;
+			}
+			one.style.webkitTransition='all .5s ease';
+
+			//获取class
+			var two=wg.getElementsClass('one','two');
+			console.log(two)
+			
+			function getElementsClass(id,classnames){ 
+				var classobj=[];
+				var tags=document.getElementById(id).getElementsByTagName("*");
+				for(var i=0 ; i < tags.length;i++){	
+						if(tags[i].getAttribute("class") == classnames)
+						{ 
+							classobj.push(tags[i]);
+						} 
+				} 
+				return classobj;
+			} 
+
+			
+			
+		</script>
+		 
+	</body>
+</html>
