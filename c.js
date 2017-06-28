@@ -162,4 +162,44 @@
 	    return s.join(dec);
 	}
 
+
+	//判断是否为微信内核
+	function isWeiXin(){
+	    var ua = window.navigator.userAgent.toLowerCase();
+	    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
+	        return true;
+	    }else{
+	        return false;
+	    }
+	}
+
+
+	/**
+	 * 	
+	 * @param  count  [description]
+	 * @param  fmtStr [description]
+	 * @param  endStr [description]
+	 * countDown(60, '#{count} s', '重新获取')
+	 */
+	function countDown(count, fmtStr, endStr) {
+
+		var _self = this,
+			_count = count || 60,
+			_fmtStr = fmtStr || '#{count}s',
+			_endStr = endStr || '获取验证码',
+			_interval = null;
+		var currentTarget = event.currentTarget;
+		currentTarget.innerHTML = _fmtStr.replace('#{count}', _count);
+		_interval = setInterval(function() {
+			_count--;
+			if (_count == 0) {
+				currentTarget.innerHTML = _endStr;
+				currentTarget.classList.remove('disabled');
+				clearInterval(_interval);
+			} else {
+				currentTarget.innerHTML = _fmtStr.replace('#{count}', _count);
+			}
+		}, 1000);
+	}
+
 })(this)
