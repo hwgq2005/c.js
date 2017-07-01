@@ -1,20 +1,24 @@
 /**
  *
  * @authors H君
- * @date    2017-03-23 11:14:18
+ * @date     2017-07-01 18:10:09
  */
 ;
 (function(window) {
 
-	//获取url地址参数值
+	/**
+	 * 获取url参数值
+	 * @param  {string} name [参数名称]
+	 */
 	function getQueryString(name) {
-		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-		var r = window.location.search.substr(1).match(reg);
-		if (r != null) return unescape(r[2]);
-		return null;
+		var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+		var r = window.location.search.slice(1).match(reg);
+		return r != null ? unescape(r[2]) : null;
 	}
 
-	//匹配终端
+	/**
+	 * 匹配终端
+	 */
 	function browser() {
 		var userAgentInfo = navigator.userAgent;
 		var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
@@ -28,7 +32,9 @@
 		return flag;
 	}
 
-	//cookies操作 
+	/**
+	 * cookies操作 
+	 */
 	var cookies ={
 		//设置cookies
 		set: function(name, value, days) {
@@ -58,7 +64,9 @@
 		}
 	}
 
-	//获取屏幕横屏、竖屏
+	/**
+	 * 获取屏幕横屏、竖屏
+	 */
 	function orient() {
 		var orientation;
 		if (window.orientation == 90 || window.orientation == -90) {
@@ -71,7 +79,10 @@
 		return orientation;
 	}
 
-	// 合并对象
+	
+	/**
+	 * 合并对象
+	 */
 	function extend(to, from) {
 		for (var key in from) {
 			to[key] = from[key];
@@ -79,17 +90,23 @@
 		return to;
 	}
 
-	// 判断是否存在class
+	/**
+	 *  判断是否存在class
+	 */
 	function hasClass(obj, cls) {
 		return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
 	}
 
-	// 添加class
+	/**
+	 *  添加class
+	 */
 	function addClass(obj, cls) {
 		if (!hasClass(obj, cls)) obj.className += " " + cls;
 	}
 
-	// 移除class
+	/**
+	 *  移除class
+	 */
 	function removeClass(obj, cls) {
 		if (hasClass(obj, cls)) {
 			var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
@@ -97,8 +114,50 @@
 		}
 	}
 
+	/**
+	 *  获取兄弟元素
+	 */
+	function sibling(elem){
+		var obj = [],
+			elemArr= elem.parentNode.children;
 
-	//打开APP
+		for (var i = 0; i < elemArr.length; i++) {
+			if(elemArr[i] != elem){
+				obj.push(elemArr[i]);
+			}
+		}
+		return obj;
+	}
+
+	/**
+	 *  前一个兄弟节点
+	 */
+    function prevSibling(node) {
+        var tempFirst = node.parentNode.firstChild;
+        if (node == tempFirst) return null;
+        var tempObj = node.previousSibling;
+        while (tempObj.nodeType != 1 && tempObj.previousSibling != null) {
+            tempObj = tempObj.previousSibling;
+        }
+        return (tempObj.nodeType==1)? tempObj:null;
+    }    
+
+    /**
+	 *  下一个兄弟节点
+	 */
+	function nextSibling(node) {
+        var tempLast = node.parentNode.lastChild;
+        if (node == tempLast) return null;
+        var tempObj = node.nextSibling;
+        while (tempObj.nodeType != 1 && tempObj.nextSibling != null) {
+            tempObj = tempObj.nextSibling;
+        }
+        return (tempObj.nodeType==1)? tempObj:null;
+    }
+
+    /**
+	 *  打开APP
+	 */
 	var skipAPP ={
 		androidFn: function() {
 	        window.location.href = "myapp://tronker.com/openwith?h5AccessUrl="+accessUrl+"&title="+docTitle;
@@ -114,10 +173,13 @@
 	    }
 	}
 
-	// distance : 底部距离
-	// thisPage : 当前页
-	// totalPage : 总页数
-	// isLoad : 是否加载完成
+	 /**
+	  * 滚动加载数据
+	  * @param  {[string]}  distance  [底部距离]
+	  * @param  {[number]}  thisPage  [当前页]
+	  * @param  {[number]}  totalPage [总页数]
+	  * @param  {[Boolean]} isLoad    [是否加载完成]
+	  */
 	function distanceScroll(distance,thisPage,totalPage,isLoad){
 		var scrollTop = document.body.scrollTop,
 			docHeight = document.body.clientHeight,
@@ -129,15 +191,15 @@
 		}	
 	}
 
-
+    /**
+	  * 格式化金额
+	  * @param  {[number]}  number  [要格式化的数字]
+	  * @param  {[number]}  decimals  [保留几位小数]
+	  * @param  {[string]}  dec_point [小数点符号]
+	  * @param  {[string]} thousands_sep    [千分位符号]
+	  */
 	function numberFormat(number, decimals, dec_point, thousands_sep){
-		/*
-	    * 参数说明：
-	    * number：要格式化的数字
-	    * decimals：保留几位小数
-	    * dec_point：小数点符号
-	    * thousands_sep：千分位符号
-	    * */
+	
 	    number = (number + '').replace(/[^0-9+-Ee.]/g, '');
 	    var n = !isFinite(+number) ? 0 : +number,
 	        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
@@ -163,24 +225,21 @@
 	}
 
 
-	//判断是否为微信内核
+	/**
+	 * 判断是否为微信内核
+	 */
 	function isWeiXin(){
-	    var ua = window.navigator.userAgent.toLowerCase();
-	    if(ua.match(/MicroMessenger/i) == 'micromessenger'){
-	        return true;
-	    }else{
-	        return false;
-	    }
+	    var ua = window.navigator.userAgent.toLowerCase()
+	    ua.match(/MicroMessenger/i) == 'micromessenger' ? return true : return false
 	}
 
-
-	/**
-	 * 	
-	 * @param  count  [description]
-	 * @param  fmtStr [description]
-	 * @param  endStr [description]
-	 * countDown(60, '#{count} s', '重新获取')
-	 */
+	 /**
+	  * 倒计时
+	  * @param  {[number]}  count  [秒数]
+	  * @param  {[string]}  fmtStr  [倒计时文字]
+	  * @param  {[string]}  endStr [结束后文字]
+	  * countDown(60, '#{count} s', '重新获取')
+	  */
 	function countDown(count, fmtStr, endStr) {
 
 		var _self = this,
