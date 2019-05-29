@@ -8,13 +8,14 @@
 
     /**
      * 获取url参数值
-     * @param  {string} name [参数名称]
+     * @param name - 参数名称
      */
     function getQueryString(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.slice(1).match(reg);
         return r != null ? unescape(r[2]) : null;
     }
+
 
     /**
      * 匹配终端
@@ -173,57 +174,25 @@
         }
     }
 
-    /**
-     * 滚动加载数据
-     * @param  {[string]}  distance  [底部距离]
-     * @param  {[number]}  thisPage  [当前页]
-     * @param  {[number]}  totalPage [总页数]
-     * @param  {[Boolean]} isLoad    [是否加载完成]
+    /*
+     * 下滑滚动
+     * @param distance - 底部距离
+     * @param callback - 回调函数
      */
-    function distanceScroll(distance, thisPage, totalPage, isLoad) {
-        var scrollTop = document.body.scrollTop,
+    distanceScroll(distance, callback) {
+
+        const vm = this;
+        const scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
             docHeight = document.body.clientHeight,
             screenHeight = window.screen.availHeight;
-        differ = scrollTop > docHeight - screenHeight - distance;
-        if (differ && isLoad && thisPage <= totalPage) {
-            isLoad = !isLoad;
-            vm.getList(thisPage);
+
+        const differ = scrollTop > docHeight - screenHeight - distance;
+
+        if (differ && vm.isLoad) {
+            callback();
         }
+
     }
-
-    /**
-     * 格式化金额
-     * @param  {[number]}  number  [要格式化的数字]
-     * @param  {[number]}  decimals  [保留几位小数]
-     * @param  {[string]}  dec_point [小数点符号]
-     * @param  {[string]} thousands_sep    [千分位符号]
-     */
-    function numberFormat(number, decimals, dec_point, thousands_sep) {
-
-        number = (number + '').replace(/[^0-9+-Ee.]/g, '');
-        var n = !isFinite(+number) ? 0 : +number,
-            prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-            sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-            dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-            s = '',
-            toFixedFix = function(n, prec) {
-                var k = Math.pow(10, prec);
-                return '' + Math.ceil(n * k) / k;
-            };
-
-        s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-        var re = /(-?\d+)(\d{3})/;
-        while (re.test(s[0])) {
-            s[0] = s[0].replace(re, "$1" + sep + "$2");
-        }
-
-        if ((s[1] || '').length < prec) {
-            s[1] = s[1] || '';
-            s[1] += new Array(prec - s[1].length + 1).join('0');
-        }
-        return s.join(dec);
-    }
-
 
     /**
      * 判断是否为微信内核
@@ -236,9 +205,9 @@
 
     /**
      * 倒计时
-     * @param  {[number]}  count  [秒数]
-     * @param  {[string]}  fmtStr  [倒计时文字]
-     * @param  {[string]}  endStr [结束后文字]
+     * @param count  - 秒数
+     * @param fmtStr - 倒计时文字
+     * @param endStr - 结束后文字
      * countDown(60, '#{count} s', '重新获取')
      */
     function countDown(count, fmtStr, endStr) {
@@ -260,6 +229,52 @@
                 currentTarget.innerHTML = _fmtStr.replace('#{count}', _count);
             }
         }, 1000);
+    }
+
+    /**
+     * 请求封装
+     * @param url     - 地址
+     * @param method  - 请求方法
+     * @param data    - 传输数据
+     * @param success - 请求成功回调
+     * @param fail    - 请求失败回调
+     */
+    function getJSON(options) {
+
+        var keys = '';
+        for (var key in options.data) {
+            keys += key + '=' + options.data[key] + '&'
+        }
+        keys = keys.substring(0, keys.length - 1);
+
+        options.method.toUpperCase() == 'GET' ? (
+            keys += '&' + options.url.split('?').pop(),
+            options.url = options.url.split('?').shift()
+        ) : '';
+
+        var xml;
+        if (window.XMLHttpRequest) {
+            xml = new XMLHttpRequest();
+        } else {
+            xml = new ActiveXObject('Microsoft.XMLHTTP');
+        }
+        var handler = function() {
+
+            if (xml.readyState == 4 && xml.status == 200) {
+                options.success ? options.success(xml.response) : '';
+            }else if (xml.readyState == 4 && xml.status != 200) {
+                options.fail ? options.fail(xml.response) : '';
+            }
+        }
+
+        xml.open(options.method, options.method.toUpperCase() == 'GET' ? options.url + '?' + keys :     options.url,true);
+        xml.onreadystatechange = handler;
+        xml.responseType = 'json';
+
+        //post请求一定要添加请求头才行不然会报错
+        xml.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        xml.setRequestHeader('Accept', 'application/json');
+        xml.send(options.method.toUpperCase() == 'POST' ? keys : '');
     }
 
 })(this)
