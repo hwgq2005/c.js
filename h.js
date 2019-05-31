@@ -6,11 +6,13 @@
 
 ;(function(window) {
 
+    var h = {};
+
     /**
      * 获取url参数值
      * @param name - 参数名称
      */
-    function getQueryString(name) {
+    h.getQueryString = function(name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.slice(1).match(reg);
         return r != null ? unescape(r[2]) : null;
@@ -20,7 +22,7 @@
     /**
      * 匹配终端
      */
-    function browser() {
+    h.browser = function() {
         var userAgentInfo = navigator.userAgent;
         var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
         var flag = true;
@@ -36,39 +38,44 @@
     /**
      * cookies操作 
      */
-    var cookies = {
-        //设置cookies
-        set: function(name, value, days) {
-            if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                var expires = "; expires=" + date.toGMTString();
-            } else var expires = "";
-            document.cookie = name + "=" + value + expires + "; path=/";
-        },
+    h.cookies = function(){
 
-        //获取cookies
-        get: function(name) {
-            var nameEQ = name + "=";
-            var ca = document.cookie.split(';');
-            for (var i = 0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        var cookies = {
+            //设置cookies
+            set: function(name, value, days) {
+                if (days) {
+                    var date = new Date();
+                    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                    var expires = "; expires=" + date.toGMTString();
+                } else var expires = "";
+                document.cookie = name + "=" + value + expires + "; path=/";
+            },
+
+            //获取cookies
+            get: function(name) {
+                var nameEQ = name + "=";
+                var ca = document.cookie.split(';');
+                for (var i = 0; i < ca.length; i++) {
+                    var c = ca[i];
+                    while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+                }
+                return null;
+            },
+
+            //清除cookies
+            erase: function(name) {
+                this.set(name, "", -1);
             }
-            return null;
-        },
-
-        //清除cookies
-        erase: function(name) {
-            this.set(name, "", -1);
         }
+        return cookies;
     }
+   
 
     /**
      * 获取屏幕横屏、竖屏
      */
-    function orient() {
+    h.orient = function() {
         var orientation;
         if (window.orientation == 90 || window.orientation == -90) {
             //ipad、iphone竖屏；Andriod横屏
@@ -84,7 +91,7 @@
     /**
      * 合并对象
      */
-    function extend(to, from) {
+    h.extend = function(to, from) {
         for (var key in from) {
             to[key] = from[key];
         }
@@ -94,21 +101,21 @@
     /**
      *  判断是否存在class
      */
-    function hasClass(obj, cls) {
+    h.hasClass = function(obj, cls) {
         return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     }
 
     /**
      *  添加class
      */
-    function addClass(obj, cls) {
+    h.addClass = function(obj, cls) {
         if (!hasClass(obj, cls)) obj.className += " " + cls;
     }
 
     /**
      *  移除class
      */
-    function removeClass(obj, cls) {
+    h.removeClass = function(obj, cls) {
         if (hasClass(obj, cls)) {
             var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
             obj.className = obj.className.replace(reg, ' ');
@@ -118,7 +125,7 @@
     /**
      *  获取兄弟元素
      */
-    function sibling(elem) {
+    h.sibling = function(elem) {
         var obj = [],
             elemArr = elem.parentNode.children;
 
@@ -133,7 +140,7 @@
     /**
      *  前一个兄弟节点
      */
-    function prevSibling(node) {
+    h.prevSibling = function(node) {
         var tempFirst = node.parentNode.firstChild;
         if (node == tempFirst) return null;
         var tempObj = node.previousSibling;
@@ -146,7 +153,7 @@
     /**
      *  下一个兄弟节点
      */
-    function nextSibling(node) {
+    h.nextSibling = function(node) {
         var tempLast = node.parentNode.lastChild;
         if (node == tempLast) return null;
         var tempObj = node.nextSibling;
@@ -156,30 +163,13 @@
         return (tempObj.nodeType == 1) ? tempObj : null;
     }
 
-    /**
-     *  打开APP
-     */
-    var skipAPP = {
-        androidFn: function() {
-            window.location.href = "myapp://tronker.com/openwith?h5AccessUrl=" + accessUrl + "&title=" + docTitle;
-            window.setTimeout(function() {
-                window.location.href = "https://www.tronker.com/work/tronker/qrcode.html?form=tronker"; /***下载app的地址***/
-            }, 2000);
-        },
-        iosFn: function() {
-            window.location.href = "iOSTronkerApp://?h5AccessUrl=" + accessUrl + "&title=" + docTitle;
-            window.setTimeout(function() {
-                window.location.href = "https://www.tronker.com/work/tronker/qrcode.html?form=tronker"; /***下载app的地址***/
-            }, 2000)
-        }
-    }
 
     /*
      * 下滑滚动
      * @param distance - 底部距离
      * @param callback - 回调函数
      */
-    distanceScroll(distance, callback) {
+    h.distanceScroll = function(distance, callback) {
 
         const vm = this;
         const scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
@@ -197,7 +187,7 @@
     /**
      * 判断是否为微信内核
      */
-    function isWeiXin() {
+    h.distanceScroll = function() {
         var ua = window.navigator.userAgent.toLowerCase()
         ua.match(/MicroMessenger/i) == 'micromessenger' ?
             return true: return false
@@ -210,7 +200,7 @@
      * @param endStr - 结束后文字
      * countDown(60, '#{count} s', '重新获取')
      */
-    function countDown(count, fmtStr, endStr) {
+    h.countDown = function(count, fmtStr, endStr) {
 
         var _self = this,
             _count = count || 60,
@@ -239,7 +229,7 @@
      * @param success - 请求成功回调
      * @param fail    - 请求失败回调
      */
-    function getJSON(options) {
+    h.getJSON = function(options) {
 
         var keys = '';
         for (var key in options.data) {
@@ -277,4 +267,6 @@
         xml.send(options.method.toUpperCase() == 'POST' ? keys : '');
     }
 
+    window.h = h;
+    
 })(this)
