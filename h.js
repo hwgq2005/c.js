@@ -1,9 +1,9 @@
 
 /**
- * @authors H君
- * @date     2017-07-01 18:10:09
- */
-
+ * @description 公共js库
+ * @author H君
+ * @date 2019/6/1
+*/
 ;(function(window) {
 
     var h = {};
