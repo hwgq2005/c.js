@@ -170,18 +170,15 @@
      * @param callback - 回调函数
      */
     h.distanceScroll = function(distance, callback) {
-
         const vm = this;
         const scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
             docHeight = document.body.clientHeight,
             screenHeight = window.screen.availHeight;
 
         const differ = scrollTop > docHeight - screenHeight - distance;
-
         if (differ && vm.isLoad) {
             callback();
         }
-
     }
 
     /**
@@ -210,10 +207,12 @@
             callback: function(){}
         };
         options = Object.assign({},defaults,options);
+
         if (!options.el) return;
         if (vm.countDown.status) return;
         vm.countDown.status = true;
         options.el.innerHTML = options.startText.replace('${seconds}',options.seconds);
+
         var time = null;
         time = setInterval(function () {
             options.seconds--;
@@ -237,13 +236,11 @@
      * @param fail    - 请求失败回调
      */
     h.getJSON = function(options) {
-
         var keys = '';
         for (var key in options.data) {
             keys += key + '=' + options.data[key] + '&'
         }
         keys = keys.substring(0, keys.length - 1);
-
         options.method.toUpperCase() == 'GET' ? (
             keys += '&' + options.url.split('?').pop(),
             options.url = options.url.split('?').shift()
@@ -256,7 +253,6 @@
             xml = new ActiveXObject('Microsoft.XMLHTTP');
         }
         var handler = function() {
-
             if (xml.readyState == 4 && xml.status == 200) {
                 options.success ? options.success(xml.response) : '';
             }else if (xml.readyState == 4 && xml.status != 200) {
