@@ -187,7 +187,7 @@
     /**
      * 判断是否为微信内核
      */
-    h.distanceScroll = function() {
+    h.isWeChat = function() {
         var ua = window.navigator.userAgent.toLowerCase()
         ua.match(/MicroMessenger/i) == 'micromessenger' ?
             return true: return false
@@ -195,31 +195,37 @@
 
     /**
      * 倒计时
-     * @param count  - 秒数
-     * @param fmtStr - 倒计时文字
-     * @param endStr - 结束后文字
-     * countDown(60, '#{count} s', '重新获取')
+     * @param seconds   - 秒数
+     * @param startText - 倒计时中文案
+     * @param endText   - 结束后文案
+     * @param callback  - 结束后回调方法
      */
-    h.countDown = function(count, fmtStr, endStr) {
-
-        var _self = this,
-            _count = count || 60,
-            _fmtStr = fmtStr || '#{count}s',
-            _endStr = endStr || '获取验证码',
-            _interval = null;
-        var currentTarget = event.currentTarget;
-        currentTarget.innerHTML = _fmtStr.replace('#{count}', _count);
-        _interval = setInterval(function() {
-            _count--;
-            if (_count == 0) {
-                currentTarget.innerHTML = _endStr;
-                currentTarget.classList.remove('disabled');
-                clearInterval(_interval);
-            } else {
-                currentTarget.innerHTML = _fmtStr.replace('#{count}', _count);
+    h.countDown(options) {
+        var vm = this;
+        var defaults = {
+            seconds: 60,
+            startText: '${seconds}s',
+            endText: '重发验证码',
+            callback: function(){}
+        };
+        options = Object.assign({},defaults,options);
+        if (!options.el) return;
+        if (vm.countDown.status) return;
+        vm.countDown.status = true;
+        options.el.innerHTML = options.startText.replace('${seconds}',options.seconds);
+        var time = null;
+        time = setInterval(function () {
+            options.seconds--;
+            if (!options.seconds) {
+                clearInterval(time);
+                options.el.innerHTML = defaults.endText;
+                vm.countDown.status = false;
+                options.callback ? options.callback() : '';
+                return;
             }
+            options.el.innerHTML = options.startText.replace('${seconds}',options.seconds);
         }, 1000);
-    }
+    },
 
     /**
      * 请求封装
@@ -268,5 +274,5 @@
     }
 
     window.h = h;
-    
+
 })(this)
