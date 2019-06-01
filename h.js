@@ -3,6 +3,7 @@
  * @author H君
  * @date 2019/6/1
  */
+
 ;(function (window) {
 
     var h = {};
@@ -40,7 +41,6 @@
      * @returns {{set: set, get: get, erase: erase}}
      */
     h.cookies = function () {
-
         var cookies = {
             //设置cookies
             set: function (name, value, days) {
@@ -51,7 +51,6 @@
                 } else var expires = "";
                 document.cookie = name + "=" + value + expires + "; path=/";
             },
-
             //获取cookies
             get: function (name) {
                 var nameEQ = name + "=";
@@ -63,7 +62,6 @@
                 }
                 return null;
             },
-
             //清除cookies
             erase: function (name) {
                 this.set(name, "", -1);
@@ -105,7 +103,7 @@
      * 是否存在class
      * @param elem
      * @param cls
-     * @returns {Array|{index: number, input: string}|*}
+     * @returns {boolean}
      */
     h.hasClass = function (elem, cls) {
         return elem.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
@@ -185,13 +183,12 @@
      * @param callback
      */
     h.distanceScroll = function (distance, callback) {
-        const vm = this;
-        const scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
+        var vm = this;
+        var scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
             docHeight = document.body.clientHeight,
             screenHeight = window.screen.availHeight;
-
-        const differ = scrollTop > docHeight - screenHeight - distance;
-        if (differ && vm.isLoad) {
+        var differ = scrollTop > docHeight - screenHeight - distance;
+        if (differ) {
             callback();
         }
     }
@@ -202,12 +199,8 @@
      */
     h.isWeChat = function () {
         var ua = window.navigator.userAgent.toLowerCase()
-        ua.match(/MicroMessenger/i) == 'micromessenger' ?
-        return true
-    :
-        return false
+        ua.match(/MicroMessenger/i) == 'micromessenger' ? return true : return false
     }
-
 
     /**
      * 倒计时
@@ -217,8 +210,7 @@
      * @param endText   - 结束后文案
      * @param callback  - 结束后回调方法
      */
-    h.countDown(options)
-    {
+    h.countDown = function (options) {
         var vm = this;
         var defaults = {
             seconds: 60,
@@ -246,8 +238,7 @@
             }
             options.el.innerHTML = options.startText.replace('${seconds}', options.seconds);
         }, 1000);
-    }
-,
+    },
 
     /**
      * 请求封装
