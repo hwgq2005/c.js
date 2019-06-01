@@ -195,6 +195,7 @@
 
     /**
      * 倒计时
+     * @param el        - 元素
      * @param seconds   - 秒数
      * @param startText - 倒计时中文案
      * @param endText   - 结束后文案
