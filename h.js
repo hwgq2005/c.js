@@ -9,7 +9,8 @@
 
     /**
      * 获取url参数值
-     * @param name - 参数名称
+     * @param name
+     * @returns {null}
      */
     h.getQueryString = function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
@@ -17,9 +18,9 @@
         return r != null ? unescape(r[2]) : null;
     }
 
-
     /**
-     * 匹配终端
+     * 判断是否为PC
+     * @returns {boolean}
      */
     h.browser = function () {
         var userAgentInfo = navigator.userAgent;
@@ -35,7 +36,8 @@
     }
 
     /**
-     * cookies操作
+     * cookies
+     * @returns {{set: set, get: get, erase: erase}}
      */
     h.cookies = function () {
 
@@ -70,9 +72,9 @@
         return cookies;
     }
 
-
     /**
      * 获取屏幕横屏、竖屏
+     * @returns {*}
      */
     h.orient = function () {
         var orientation;
@@ -86,9 +88,11 @@
         return orientation;
     }
 
-
     /**
      * 合并对象
+     * @param to
+     * @param from
+     * @returns {*}
      */
     h.extend = function (to, from) {
         for (var key in from) {
@@ -98,31 +102,40 @@
     }
 
     /**
-     *  判断是否存在class
+     * 是否存在class
+     * @param elem
+     * @param cls
+     * @returns {Array|{index: number, input: string}|*}
      */
-    h.hasClass = function (obj, cls) {
-        return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
+    h.hasClass = function (elem, cls) {
+        return elem.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     }
 
     /**
-     *  添加class
+     * 添加class
+     * @param elem
+     * @param cls
      */
-    h.addClass = function (obj, cls) {
-        if (!hasClass(obj, cls)) obj.className += " " + cls;
+    h.addClass = function (elem, cls) {
+        if (!hasClass(elem, cls)) elem.className += " " + cls;
     }
 
     /**
-     *  移除class
+     * 移除class
+     * @param elem
+     * @param cls
      */
-    h.removeClass = function (obj, cls) {
-        if (hasClass(obj, cls)) {
+    h.removeClass = function (elem, cls) {
+        if (this.hasClass(elem, cls)) {
             var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
-            obj.className = obj.className.replace(reg, ' ');
+            elem.className = elem.className.replace(reg, ' ');
         }
     }
 
     /**
-     *  获取兄弟元素
+     * 获取兄弟元素
+     * @param elem
+     * @returns {Array}
      */
     h.sibling = function (elem) {
         var obj = [],
@@ -137,7 +150,9 @@
     }
 
     /**
-     *  前一个兄弟节点
+     * 前一个兄弟节点
+     * @param node
+     * @returns {*}
      */
     h.prevSibling = function (node) {
         var tempFirst = node.parentNode.firstChild;
@@ -150,7 +165,9 @@
     }
 
     /**
-     *  下一个兄弟节点
+     * 下一个兄弟节点
+     * @param node
+     * @returns {*}
      */
     h.nextSibling = function (node) {
         var tempLast = node.parentNode.lastChild;
@@ -162,11 +179,10 @@
         return (tempObj.nodeType == 1) ? tempObj : null;
     }
 
-
-    /*
+    /**
      * 下滑滚动
-     * @param distance - 底部距离
-     * @param callback - 回调函数
+     * @param distance
+     * @param callback
      */
     h.distanceScroll = function (distance, callback) {
         const vm = this;
@@ -182,6 +198,7 @@
 
     /**
      * 判断是否为微信内核
+     * @returns {boolean}
      */
     h.isWeChat = function () {
         var ua = window.navigator.userAgent.toLowerCase()
@@ -190,6 +207,7 @@
     :
         return false
     }
+
 
     /**
      * 倒计时
