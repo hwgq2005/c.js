@@ -1,10 +1,9 @@
-
 /**
  * @description 公共js库
  * @author H君
  * @date 2019/6/1
-*/
-;(function(window) {
+ */
+;(function (window) {
 
     var h = {};
 
@@ -12,7 +11,7 @@
      * 获取url参数值
      * @param name - 参数名称
      */
-    h.getQueryString = function(name) {
+    h.getQueryString = function (name) {
         var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
         var r = window.location.search.slice(1).match(reg);
         return r != null ? unescape(r[2]) : null;
@@ -22,7 +21,7 @@
     /**
      * 匹配终端
      */
-    h.browser = function() {
+    h.browser = function () {
         var userAgentInfo = navigator.userAgent;
         var Agents = new Array("Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod");
         var flag = true;
@@ -36,13 +35,13 @@
     }
 
     /**
-     * cookies操作 
+     * cookies操作
      */
-    h.cookies = function(){
+    h.cookies = function () {
 
         var cookies = {
             //设置cookies
-            set: function(name, value, days) {
+            set: function (name, value, days) {
                 if (days) {
                     var date = new Date();
                     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -52,7 +51,7 @@
             },
 
             //获取cookies
-            get: function(name) {
+            get: function (name) {
                 var nameEQ = name + "=";
                 var ca = document.cookie.split(';');
                 for (var i = 0; i < ca.length; i++) {
@@ -64,18 +63,18 @@
             },
 
             //清除cookies
-            erase: function(name) {
+            erase: function (name) {
                 this.set(name, "", -1);
             }
         }
         return cookies;
     }
-   
+
 
     /**
      * 获取屏幕横屏、竖屏
      */
-    h.orient = function() {
+    h.orient = function () {
         var orientation;
         if (window.orientation == 90 || window.orientation == -90) {
             //ipad、iphone竖屏；Andriod横屏
@@ -91,7 +90,7 @@
     /**
      * 合并对象
      */
-    h.extend = function(to, from) {
+    h.extend = function (to, from) {
         for (var key in from) {
             to[key] = from[key];
         }
@@ -101,21 +100,21 @@
     /**
      *  判断是否存在class
      */
-    h.hasClass = function(obj, cls) {
+    h.hasClass = function (obj, cls) {
         return obj.className.match(new RegExp('(\\s|^)' + cls + '(\\s|$)'));
     }
 
     /**
      *  添加class
      */
-    h.addClass = function(obj, cls) {
+    h.addClass = function (obj, cls) {
         if (!hasClass(obj, cls)) obj.className += " " + cls;
     }
 
     /**
      *  移除class
      */
-    h.removeClass = function(obj, cls) {
+    h.removeClass = function (obj, cls) {
         if (hasClass(obj, cls)) {
             var reg = new RegExp('(\\s|^)' + cls + '(\\s|$)');
             obj.className = obj.className.replace(reg, ' ');
@@ -125,7 +124,7 @@
     /**
      *  获取兄弟元素
      */
-    h.sibling = function(elem) {
+    h.sibling = function (elem) {
         var obj = [],
             elemArr = elem.parentNode.children;
 
@@ -140,7 +139,7 @@
     /**
      *  前一个兄弟节点
      */
-    h.prevSibling = function(node) {
+    h.prevSibling = function (node) {
         var tempFirst = node.parentNode.firstChild;
         if (node == tempFirst) return null;
         var tempObj = node.previousSibling;
@@ -153,7 +152,7 @@
     /**
      *  下一个兄弟节点
      */
-    h.nextSibling = function(node) {
+    h.nextSibling = function (node) {
         var tempLast = node.parentNode.lastChild;
         if (node == tempLast) return null;
         var tempObj = node.nextSibling;
@@ -169,7 +168,7 @@
      * @param distance - 底部距离
      * @param callback - 回调函数
      */
-    h.distanceScroll = function(distance, callback) {
+    h.distanceScroll = function (distance, callback) {
         const vm = this;
         const scrollTop = document.body.scrollTop || document.documentElement.scrollTop,
             docHeight = document.body.clientHeight,
@@ -184,10 +183,12 @@
     /**
      * 判断是否为微信内核
      */
-    h.isWeChat = function() {
+    h.isWeChat = function () {
         var ua = window.navigator.userAgent.toLowerCase()
         ua.match(/MicroMessenger/i) == 'micromessenger' ?
-            return true: return false
+        return true
+    :
+        return false
     }
 
     /**
@@ -198,20 +199,22 @@
      * @param endText   - 结束后文案
      * @param callback  - 结束后回调方法
      */
-    h.countDown(options) {
+    h.countDown(options)
+    {
         var vm = this;
         var defaults = {
             seconds: 60,
             startText: '${seconds}s',
             endText: '重发验证码',
-            callback: function(){}
+            callback: function () {
+            }
         };
-        options = Object.assign({},defaults,options);
+        options = Object.assign({}, defaults, options);
 
         if (!options.el) return;
         if (vm.countDown.status) return;
         vm.countDown.status = true;
-        options.el.innerHTML = options.startText.replace('${seconds}',options.seconds);
+        options.el.innerHTML = options.startText.replace('${seconds}', options.seconds);
 
         var time = null;
         time = setInterval(function () {
@@ -223,9 +226,10 @@
                 options.callback ? options.callback() : '';
                 return;
             }
-            options.el.innerHTML = options.startText.replace('${seconds}',options.seconds);
+            options.el.innerHTML = options.startText.replace('${seconds}', options.seconds);
         }, 1000);
-    },
+    }
+,
 
     /**
      * 请求封装
@@ -235,7 +239,7 @@
      * @param success - 请求成功回调
      * @param fail    - 请求失败回调
      */
-    h.getJSON = function(options) {
+    h.getJSON = function (options) {
         var keys = '';
         for (var key in options.data) {
             keys += key + '=' + options.data[key] + '&'
@@ -243,7 +247,7 @@
         keys = keys.substring(0, keys.length - 1);
         options.method.toUpperCase() == 'GET' ? (
             keys += '&' + options.url.split('?').pop(),
-            options.url = options.url.split('?').shift()
+                options.url = options.url.split('?').shift()
         ) : '';
 
         var xml;
@@ -252,15 +256,15 @@
         } else {
             xml = new ActiveXObject('Microsoft.XMLHTTP');
         }
-        var handler = function() {
+        var handler = function () {
             if (xml.readyState == 4 && xml.status == 200) {
                 options.success ? options.success(xml.response) : '';
-            }else if (xml.readyState == 4 && xml.status != 200) {
+            } else if (xml.readyState == 4 && xml.status != 200) {
                 options.fail ? options.fail(xml.response) : '';
             }
         }
 
-        xml.open(options.method, options.method.toUpperCase() == 'GET' ? options.url + '?' + keys :     options.url,true);
+        xml.open(options.method, options.method.toUpperCase() == 'GET' ? options.url + '?' + keys : options.url, true);
         xml.onreadystatechange = handler;
         xml.responseType = 'json';
 
