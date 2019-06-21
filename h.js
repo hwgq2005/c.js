@@ -100,6 +100,21 @@
     }
 
     /**
+     * 将数组转成对象
+     * @param arr 数组
+     * @param key 指定的key
+     * @returns Object
+     */
+    h.formatObj = function (arr, key) {
+        let obj = {};
+        if (arr instanceof Array !== true || !key) return;
+        for (let item of arr) {
+            obj[item[key]] = item;
+        }
+        return obj;
+    }
+
+    /**
      * 是否存在class
      * @param elem
      * @param cls
